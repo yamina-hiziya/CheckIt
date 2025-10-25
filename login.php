@@ -1,4 +1,15 @@
-<?php require_once __DIR__ . '/templates/header.php'; ?>
+<?php
+
+require_once __DIR__ . '/templates/header.php';
+require_once __DIR__ . '/lib/pdo.php';
+require_once __DIR__ . '/lib/user.php';
+
+if (isset($_POST['loginUser'])) {
+
+    verifyUserLoginPassword($pdo, $_POST['email'], $_POST['password']);
+}
+
+?>
 
 
 <div class="container col-xxl-8 px-4 py-5">
