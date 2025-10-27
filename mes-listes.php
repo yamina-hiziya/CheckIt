@@ -5,7 +5,6 @@ require_once __DIR__ . '/lib/list.php';
 
 if (isset($_SESSION['user'])) {
     $lists = getListsByUserId($pdo, $_SESSION['user']['id']);
-    var_dump($lists);
 }
 
 ?>
