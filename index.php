@@ -1,6 +1,5 @@
-<?php require_once __DIR__ . '/templates/header.php';
-
-$hash = password_hash('test', PASSWORD_DEFAULT);
+<?php
+require_once __DIR__ . '/templates/header.php';
 ?>
 
 <div class="container col-xxl-8 px-4 py-5">
