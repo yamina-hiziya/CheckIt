@@ -10,6 +10,15 @@ function getListsByUserId(PDO $pdo, int $userId): array
     return $lists;
 }
 
+function getListById(PDO $pdo, int $id): array|bool
+{
+    $query = $pdo->prepare("SELECT * FROM list WHERE id = :id");
+    $query->bindValue(':id', $id, PDO::PARAM_INT);
+    $query->execute();
+
+    return $query->fetch(PDO::FETCH_ASSOC);
+}
+
 function saveList(PDO $pdo, string $title, int $user_id, int $categoryId, ?int $id = null): int|bool
 {
     if ($id) {
