@@ -9,3 +9,27 @@ function getListsByUserId(PDO $pdo, int $userId): array
 
     return $lists;
 }
+
+function saveList(PDO $pdo, string $title, int $user_id, int $categoryId, ?int $id = null): int|bool
+{
+    if ($id) {
+        //UPDATE
+    } else {
+        //INSERT
+        $query = $pdo->prepare("INSERT INTO list (title, user_id, category_id) VALUES (:title, :user_id, :category_id)");
+    }
+    $query->bindValue(':title', $title, PDO::PARAM_STR);
+    $query->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+    $query->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+
+    $res = $query->execute();
+    if ($res) {
+        if ($id) {
+            return $id;
+        } else {
+            return $pdo->lastInsertId();
+        }
+    } else {
+        return false;
+    }
+}

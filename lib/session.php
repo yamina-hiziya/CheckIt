@@ -7,3 +7,8 @@ session_set_cookie_params(
     ]
 );
 session_start();
+
+function isUserConnected(): bool
+{
+    return isset($_SESSION['user']);
+}
