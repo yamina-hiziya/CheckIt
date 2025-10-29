@@ -24,10 +24,9 @@ require_once __DIR__ . "/../lib/session.php";
                 </a>
             </div>
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="#" class="nav-link px-2 link-secondary">Accueil</a></li>
                 <li><a href="mes-listes.php" class="nav-link px-2">Mes listes</a></li>
-                <li><a href="#" class="nav-link px-2">FAQs</a></li>
-                <li><a href="#" class="nav-link px-2">About</a></li>
+                <li><a href="a-propos.php" class="nav-link px-2">A propos</a></li>
             </ul>
             <div class="col-md-3 text-end">
                 <?php if (isUserConnected()) {  ?>
