@@ -23,6 +23,8 @@ function saveList(PDO $pdo, string $title, int $user_id, int $categoryId, ?int $
 {
     if ($id) {
         //UPDATE
+        $query = $pdo->prepare("UPDATE list SET title = :title, user_id = :user_id, category_id = :category_id WHERE id = :id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
     } else {
         //INSERT
         $query = $pdo->prepare("INSERT INTO list (title, user_id, category_id) VALUES (:title, :user_id, :category_id)");

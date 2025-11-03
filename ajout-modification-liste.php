@@ -13,14 +13,23 @@ if (!isUserConnected()) {
 $categories = getCategories($pdo);
 
 $errorsList = [];
+$messagesList = [];
 
 //le formulaire d'ajout/modif de liste a été envoyé
 if (isset($_POST['saveList'])) {
     if (!empty($_POST['title'])) {
-        $res = saveList($pdo, $_POST['title'], (int) $_SESSION['user']['id'], (int) $_POST['category_id']);
+        $id = null;
+        if (isset($_GET['id'])) {
+            $id = (int) $_GET['id'];
+        }
+        $res = saveList($pdo, $_POST['title'], (int) $_SESSION['user']['id'], (int) $_POST['category_id'], $id);
+
         if ($res) {
-            // succès
-            header('Location: ajout-modification-liste.php');
+            if (!$id) {
+                $messagesList[] = "La liste a bien été mise à jour";
+            } else {
+                header('Location: ajout-modification-liste.php?id=' . $res);
+            }
         } else {
             // erreur
             $errorsList[] = "La liste n'a pas pu être enregistrée";
@@ -30,38 +39,46 @@ if (isset($_POST['saveList'])) {
         $errorsList[] = "Le titre est obligatoire";
     }
 }
+$editMode = false;
+if (isset($_GET['id'])) {
+    // Récupérer les données de la liste à modifier
+    $list = getListById($pdo, (int) $_GET['id']);
+    $editMode = true;
+}
 ?>
 
 <div class="container col-xxl-8">
     <h1>Liste</h1>
     <?php foreach ($errorsList as $error) { ?>
         <div class="alert alert-danger">
-            <?= $error ?>
+            <?= $error; ?>
+        </div>
+    <?php } ?>
+    <?php foreach ($messagesList as $message) { ?>
+        <div class="alert alert-success">
+            <?= $message; ?>
         </div>
     <?php } ?>
     <div class="accordion" id="accordionExample">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <?php if (isset($_GET['id'])) { ?>
-                        Modifier la liste
-                    <?php } else { ?>
-                        Ajouter une liste
-                    <?php } ?>
+                <button class="accordion-button <?= ($editMode) ? 'collapsed' : '' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded=<?= ($editMode ? 'false' : 'true') ?> aria-controls="collapseOne">
+                    <?= ($editMode ? $list['title'] : 'Ajouter une liste') ?>
                 </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div id="collapseOne" class="accordion-collapse collapse <?= ($editMode) ? '' : 'show' ?>" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <form action="ajout-modification-liste.php" method="post">
                         <div class="mb-3">
                             <label for="title" class="form-label">Titre</label>
-                            <input type="text" class="form-control" id="title" name="title">
+                            <input type="text" value="<?= $list['title'] ?>" class="form-control" id="title" name="title">
                         </div>
                         <div class="mb-3">
                             <label for="category_id" class="form-label">Catégorie</label>
                             <select name="category_id" id="category_id" class="form-control">
                                 <?php foreach ($categories as $category) { ?>
-                                    <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
+                                    <option <?= (($category['id'] === $list['category_id']) ? 'selected="selected"' : '') ?>
+                                        value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
