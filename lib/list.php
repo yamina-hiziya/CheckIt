@@ -44,3 +44,19 @@ function saveList(PDO $pdo, string $title, int $user_id, int $categoryId, ?int $
         return false;
     }
 }
+function saveListItem(PDO $pdo, string $name, int $listId, bool $status = false, ?int $id = null): bool
+{
+    if ($id) {
+        //UPDATE
+        $query = $pdo->prepare("UPDATE item SET name = :name, list_id = :list_id, status = :status WHERE id = :id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+    } else {
+        //INSERT
+        $query = $pdo->prepare("INSERT INTO item (name, list_id, status) VALUES (:name, :list_id, :status)");
+    }
+    $query->bindValue(':name', $name, PDO::PARAM_STR);
+    $query->bindValue(':list_id', $listId, PDO::PARAM_INT);
+    $query->bindValue(':status', $status, PDO::PARAM_BOOL);
+
+    return $query->execute();
+}

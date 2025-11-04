@@ -13,7 +13,13 @@ if (!isUserConnected()) {
 $categories = getCategories($pdo);
 
 $errorsList = [];
+$errorsListItem = [];
 $messagesList = [];
+
+$list = [
+    'title' => '',
+    'category_id' => '',
+];
 
 //le formulaire d'ajout/modif de liste a été envoyé
 if (isset($_POST['saveList'])) {
@@ -39,10 +45,21 @@ if (isset($_POST['saveList'])) {
         $errorsList[] = "Le titre est obligatoire";
     }
 }
+//le formulaire d'ajout d'items a été envoyé
+if (isset($_POST['saveItem'])) {
+    if (!empty($_POST['name'])) {
+        //sauvegarder
+        $res = saveListItem($pdo, $_POST['name'], (int)$_GET['id'], false);
+    } else {
+        //erreur
+        $errorsListItem[] = "Le nom de l'item est obligatoire";
+    }
+}
+
 $editMode = false;
 if (isset($_GET['id'])) {
     // Récupérer les données de la liste à modifier
-    $list = getListById($pdo, (int) $_GET['id']);
+    $list = getListById($pdo, (int)$_GET['id']);
     $editMode = true;
 }
 ?>
@@ -90,6 +107,30 @@ if (isset($_GET['id'])) {
             </div>
         </div>
     </div>
+
+    <div class="row mt-3">
+        <?php if (!$editMode) {  ?>
+            <div class="alert alert-warning">
+                Aprés avoir enregistrée, vous pourrez ajouter des items.
+            </div>
+        <?php } else {  ?>
+            <h2 class="border-top pt-3">Items</h2>
+
+            <?php foreach ($errorsListItem as $error) { ?>
+                <div class="alert alert-danger">
+                    <?= $error; ?>
+                </div>
+            <?php } ?>
+
+            <form method="post" class="d-flex">
+                <input type="checkbox" name="status" id="status" autocomplete="off">
+                <input type="text" name="name" id="name" placeholder=" Ajouter un items" class="form-control mx-2" autocomplete="off" required>
+                <input type="submit" name="saveItem" class="btn btn-primary" value="Enregistrer">
+            </form>
+        <?php } ?>
+
+    </div>
+
 </div>
 
 
