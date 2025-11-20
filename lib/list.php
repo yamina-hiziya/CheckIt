@@ -44,6 +44,7 @@ function saveList(PDO $pdo, string $title, int $user_id, int $categoryId, ?int $
         return false;
     }
 }
+
 function saveListItem(PDO $pdo, string $name, int $listId, bool $status = false, ?int $id = null): bool
 {
     if ($id) {
@@ -58,5 +59,20 @@ function saveListItem(PDO $pdo, string $name, int $listId, bool $status = false,
     $query->bindValue(':list_id', $listId, PDO::PARAM_INT);
     $query->bindValue(':status', $status, PDO::PARAM_BOOL);
 
+    return $query->execute();
+}
+
+function getListItems(PDO $pdo, int $id): array
+{
+    $query = $pdo->prepare("SELECT * FROM item WHERE list_id = :id");
+    $query->bindValue(':id', $id, PDO::PARAM_INT);
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function deleteListItemById(PDO $pdo, int $itemId): bool
+{
+    $query = $pdo->prepare("DELETE FROM item WHERE id = :id");
+    $query->bindValue(':id', $itemId, PDO::PARAM_INT);
     return $query->execute();
 }
