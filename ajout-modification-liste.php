@@ -70,7 +70,16 @@ if (isset($_GET['action']) && isset($_GET['item_id'])) {
         header('Location: ajout-modification-liste.php?id=' . (int)$_GET['id']);
         exit;
     }
+    if ($_GET['action'] === 'updateStatusListItem') {
+        $res = updateListItemStatus($pdo, (int)$_GET['item_id'], (bool)$_GET['status']);
+        if (isset($_GET['redirect']) && $_GET['redirect'] === 'list') {
+            header('Location: mes-listes.php');
+        } else {
+            header('Location: ajout-modification-liste.php?id=' . $_GET['id']);
+        }
+    }
 }
+
 
 $editMode = false;
 if (isset($_GET['id'])) {
@@ -152,7 +161,7 @@ if (isset($_GET['id'])) {
                         <div class="accordion-item" id="accordeon-parent-<?= $item['id'] ?>">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-item-<?= $item['id'] ?>" aria-expanded='false' aria-expanded="false" aria-controls="collapseOne">
-                                    <a class="me-2" href="#"><i class="bi bi-check-circle"></i></a>
+                                    <a class="me-2" href="?id=<?= $_GET['id'] ?>&action=updateStatusListItem&item_id=<?= $item['id'] ?>&status=<?= !$item['status'] ?>"><i class="bi bi-check-circle<?= ($item['status'] ? '-fill' : '') ?>  ?><?= ($item['status'] ? '-fill' : '') ?>"></i></a>
                                     <?= $item['name'] ?>
                                 </button>
                             </h2>
